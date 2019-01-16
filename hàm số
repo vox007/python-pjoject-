@@ -1,0 +1,33 @@
+# Cho 1 list , mối phần tử gồm các tuple hoành độ (Xo) và tung độ (Yo), kiểm tra xem đồ thi j hàm số có đi qua điểm đó hay không 
+# Tính tổng tung độ 2 list rồi in ra trị tuyệt đối của hiệu 2 list đó 
+hamso = [(-5,-20),(-4,-15),(-3,4),(-2,9),(-1,7),(0,1),(1,-7),(2,-9),(4,81),(5,130)]
+A = [] 
+B = []
+for i in range (0,len(hamso)): # xác định các số x,y 
+    x = hamso[i][0]
+    y = hamso[i][1]
+    
+    if y == x**3 + 2*(x**2) - 4*x + 1: # hàm thử x,y  
+        print ("Correct")
+        print (y,x)
+        A.append(y) # các biến y được đặt vào list A 
+        print(A)
+    else:
+        B.append(y) # các biến y còn lại không phù hợp được đặt vào list B 
+        print (B)
+
+def totalA(): # Tính tổng các phần tử y trong list A 
+    sumA = 0 
+    for a in A: 
+        sumA = sumA + a
+    return sumA
+    
+
+def totalB(): # Tính tổng các phần tử B trong list B 
+    sumB = 0
+    for b in B: 
+        sumB = sumB + b
+    return sumB
+
+
+print (abs(totalA()-totalB())) # in trị tuyệt đối cho tông A và B 
