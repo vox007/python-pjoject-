@@ -1,0 +1,155 @@
+
+import turtle 
+import os 
+import math
+import random 
+
+# Set up the screen again 
+wn = turtle.Screen()
+wn.bgcolor("blue")
+wn.bgpic("space.gif")
+
+#register the shapes
+turtle.register_shape("invader.gif")
+turtle.register_shape("player.gif")
+
+
+
+#Draw border 600x600 of center screen 
+border_pen = turtle.Turtle() # Draw the screen line 
+border_pen.speed(0)
+border_pen.color("white")
+border_pen.penup()
+border_pen.setposition(-300,-300)
+border_pen.pendown()
+border_pen.pensize(10)
+for size in range(4): 
+    border_pen.fd(600)
+    border_pen.lt(90)
+border_pen.hideturtle()
+
+# Create Multiple Enemies : First : Enemyspeed  
+enemyspeed = 10
+playerspeed = 15
+bulletspeed = 20
+bulletstate = "ready"
+# Choose the number of enemies
+number_of_enemies =  5
+# Create An Empty List
+enemies = []
+# Add enemies to list
+for i in range(number_of_enemies):
+    enemies.append(turtle.Turtle())
+
+for enemy in enemies: 
+    enemy.color("red")
+    enemy.shape("invader.gif")
+    enemy.penup()
+    enemy.speed(0)
+    x = random.randint(-200,200)
+    y = random.randint(100,250)
+    enemy.setposition(x,y)
+
+    
+
+#Create a Player 
+player = turtle.Turtle() 
+player.color("black")
+player.shape("player.gif")
+player.penup()
+player.speed(2)
+player.setposition(0,-250)
+player.setheading(90)
+
+# Create a Bullet 
+bullet = turtle.Turtle()
+bullet.color("white")
+bullet.shape("triangle")
+bullet.penup()
+bullet.speed(5)
+bullet.setheading(90)
+bullet.shapesize(0.5,0.5)
+
+#Create a Move Function for Player: 
+def move_right():
+    x = player.xcor()
+    x += playerspeed
+    if x > 280: 
+        x = 280
+    player.setx(x)
+
+def move_left():
+    x = player.xcor()
+    x -= playerspeed
+    if x < -280: 
+        x = 280
+    player.setx(x)
+# Create a Function to set a posiotion for bullet 
+def fire_bullet():
+    global bulletstate
+    if bulletstate == "ready":
+        bulletstate = "fire"
+        x = player.xcor()
+        y = player.ycor() + 20 # Show the bullet above the player , depend you want it or not 
+        bullet.setposition(x,y)
+        bullet.showturtle()
+#Make the collision for bullet and enemy , or enemy and player
+def isCollision(t1,t2):
+    distance = math.sqrt(math.pow(t1.xcor()-t2.xcor(),2)+math.pow(t1.ycor()-t2.ycor(),2))
+    if distance < 30:
+        return True
+    else:
+        return False
+
+        
+
+turtle.listen()
+turtle.onkey(move_right,"Right")
+turtle.onkey(move_left,"Left")
+turtle.onkey(fire_bullet,"space")
+
+while True: 
+    for enemy in enemies: 
+        x = enemy.xcor() 
+        x += enemyspeed 
+        enemy.setx(x)
+
+        if enemy.xcor() > 275: 
+            y = enemy.ycor()
+            y -= 40 
+            enemyspeed *= -1 
+            enemy.sety(y)
+
+        if enemy.xcor() < -275: 
+            y = enemy.ycor() 
+            y -=40 
+            enemyspeed *= -1 
+            enemy.sety(y)
+
+        if bulletstate =="fire":
+            y = bullet.ycor()
+            y += bulletspeed
+            bullet.sety(y)
+            
+        if bullet.ycor() > 275: 
+            bullet.hideturtle() # Do nếu bấm space liên tục thì bullet ko bay được nên ta sẽ dùng đến lệnh mới
+            bulletstate = "ready"
+
+        if isCollision(bullet,enemy):
+            #reset the bullet 
+            bullet.hideturtle()
+            bulletstate = "ready"
+            bullet.setposition(0,-400)
+            #reset the enemy
+            x = random.randint(-200,200)
+            y = random.randint(100,250)
+            enemy.setposition(x,y)
+
+        if isCollision(player,enemy):
+            player.hideturtle()
+            enemy.hideturtle()
+            print("You Lose!!!")
+            break # break the loop because the game is over 
+        
+
+
